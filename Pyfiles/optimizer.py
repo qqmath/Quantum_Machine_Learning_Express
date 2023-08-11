@@ -16,11 +16,11 @@ def SPSA_gradient(loss, currentParams, gradientCoefficient):
     numParams = len(currentParams)
     # Generate a random perturbation using the Rademacher distribution
     randomPerturbation = 2*np.random.binomial(1, .5, size=numParams) - 1
-    
-    gradient = (loss(currentParams + gradientCoefficient*randomPerturbation) - loss(currentParams - gradientCoefficient*randomPerturbation))\
-                        /(gradientCoefficient*randomPerturbation)
-    
-    return gradient
+
+    return (
+        loss(currentParams + gradientCoefficient * randomPerturbation)
+        - loss(currentParams - gradientCoefficient * randomPerturbation)
+    ) / (gradientCoefficient * randomPerturbation)
 
 def SPSA_update(loss, currentParams, updateCoefficient, gradientCoefficient):
     r'''Performs a parameter update according to the SPSA approach.

@@ -51,13 +51,9 @@ def convertv(input_dict):
     Returns:
         yprediction'''    
     k = Counter(input_dict)
-    val=k.most_common(1)[0][0] 
+    val=k.most_common(1)[0][0]
     list1=['00','11'];
-    if val in list1:
-        ypredit=-1
-    else:
-        ypredit=1
-    return ypredit
+    return -1 if val in list1 else 1
 
 
 
@@ -97,8 +93,7 @@ def Qrun(datainput,currentParams,nshot,nqubit):
     job = execute(qc, backend, shots=nshot)
     result = job.result()
     count =result.get_counts()
-    predict=convertv(count)
-    return predict
+    return convertv(count)
 
 
     
@@ -112,7 +107,7 @@ def l1loss(predict,datalabel):
         calculate l1 loss'''    
     return abs(predict-datalabel)
 
-def loss2qubit(datainput,datalabel,currentParams):    
+def loss2qubit(datainput,datalabel,currentParams):
     r'''L1 loss assmbler, run the Q circuit, and calcualte the loss for the given data.
     
     Inputs:
@@ -123,15 +118,12 @@ def loss2qubit(datainput,datalabel,currentParams):
     Returns:
         calculate l1 loss'''    
     
-    nshot=10000; #number of shots on simulation
-    nqubit=2; # how many qubit?
-    
+    nshot=10000
+    nqubit=2
     predict=Qrun(datainput,currentParams,nshot,nqubit)
-    loss=l1loss(predict,datalabel)
-   
-    return loss
+    return l1loss(predict,datalabel)
 
-def quick_predict(datainput,currentParams):    
+def quick_predict(datainput,currentParams):
     r'''L1 loss assmbler, run the Q circuit, and calcualte the loss for the given data.
     
     Inputs:
@@ -142,12 +134,9 @@ def quick_predict(datainput,currentParams):
     Returns:
         prediction'''    
     
-    nshot=200; #number of shots on simulation
-    nqubit=2; # how many qubit?
-    
-    predict=Qrun(datainput,currentParams,nshot,nqubit)
-   
-    return predict
+    nshot=200
+    nqubit=2
+    return Qrun(datainput,currentParams,nshot,nqubit)
 
 
 
@@ -166,13 +155,9 @@ def convert_qubitF(input_dict):
     Returns:
         yprediction'''    
     k = Counter(input_dict)
-    val=k.most_common(1)[0][0] 
+    val=k.most_common(1)[0][0]
     list1=['0000','0001','0010','0011','1100','1101','1110','1111'];
-    if val in list1:
-        ypredit=-1
-    else:
-        ypredit=1
-    return ypredit
+    return -1 if val in list1 else 1
 
 
 
@@ -189,12 +174,11 @@ def Qrun_qubitF(datainput,currentParams,nshot,nqubit,circuit):
     job = execute(qc, backend, shots=nshot)
     result = job.result()
     count =result.get_counts()
-    predict=convert_qubitF(count)
-    return predict
+    return convert_qubitF(count)
 
 
 
-def loss_qubitF(datainput,datalabel,currentParams,circuit):    
+def loss_qubitF(datainput,datalabel,currentParams,circuit):
     r'''L1 loss assmbler, run the Q circuit, and calcualte the loss for the given data.
     
     Inputs:
@@ -205,15 +189,12 @@ def loss_qubitF(datainput,datalabel,currentParams,circuit):
     Returns:
         calculate l1 loss'''    
     
-    nshot=10000; #number of shots on simulation
-    nqubit=4; # how many qubit?
-    
+    nshot=10000
+    nqubit=4
     predict=Qrun_qubitF(datainput,currentParams,nshot,nqubit,circuit)
-    loss=l1loss(predict,datalabel)
-   
-    return loss
+    return l1loss(predict,datalabel)
 
-def predict_qubitF(datainput,currentParams,circuit):    
+def predict_qubitF(datainput,currentParams,circuit):
     r'''L1 loss assmbler, run the Q circuit, and calcualte the loss for the given data.
     
     Inputs:
@@ -224,9 +205,6 @@ def predict_qubitF(datainput,currentParams,circuit):
     Returns:
         prediction'''    
     
-    nshot=200; #number of shots on simulation
-    nqubit=4; # how many qubit?
-    
-    predict=Qrun_qubitF(datainput,currentParams,nshot,nqubit,circuit)
-   
-    return predict
+    nshot=200
+    nqubit=4
+    return Qrun_qubitF(datainput,currentParams,nshot,nqubit,circuit)

@@ -45,7 +45,7 @@ def make_embedding_circuit():
 def make_classifer_circuit(ID):
     r'''A helper function which makes the classfier circuits.
         Given an ID, it returns the PQC.'''
-    param_y=[(Parameter('θ'+str(i))) for i in range(40)]
+    param_y = [Parameter(f'θ{str(i)}') for i in range(40)]
     ansatz = QuantumCircuit(4, name='PQC')
     ansatz=globals()["circuit"+"{0}".format(ID)](ansatz,param_y,1,0)
     # Remove this word once you've filled in the code.
@@ -62,12 +62,7 @@ def load_data(dataSetID):
     dataCoords = np.loadtxt(dataPath)
     dataLabels = np.loadtxt(dataLabel)
 
-    # Make a data structure which is easier to work with
-    # for shuffling. 
-    # Also, notice we change the data labels from {0, 1} to {-1, +1}
-    data = list(zip(dataCoords, 2*dataLabels-1))
-    
-    return data
+    return list(zip(dataCoords, 2*dataLabels-1))
 
 def generate_train_validate_test_data(data, train_size=100, validate_size=500, test_size=None, randomSeed=0):
     r'''This is a function which, given a dataset, will return 3 distinct datasets from it: a training dataset,
@@ -146,7 +141,7 @@ def train_model(feature_map, ansatz, epochs, learning_rate, train_X, train_y, qi
                           interpret=parity, output_shape=output_shape, quantum_instance=qi)
 
     # Set up the pyTorch model
-    np.random.seed(0)  
+    np.random.seed(0)
     initial_weights = 0.1*(2*np.random.rand(qnn.num_weights) - 1)
     model = TorchConnector(qnn, initial_weights)
 
@@ -155,20 +150,20 @@ def train_model(feature_map, ansatz, epochs, learning_rate, train_X, train_y, qi
     f_loss = MSELoss(reduction='mean')
 
     # Set model to training mode
-    model.train()   
+    model.train()
     print("__Learning Rate (", learning_rate,") is intialized")
 
-    for epoch in range(epochs):
+    for _ in range(epochs):
         optimizer.zero_grad()                        # initialize gradient
         loss = 0.0                                   # initialize loss    
         for x, y_target in zip(train_X, train_y):    # evaluate batch loss
             output = model(Tensor(x)).reshape(1, 2)  # forward pass
             targets=Tensor([y_target]).long()
             targets = targets.to(torch.float32)
-            loss += f_loss(output, targets) 
+            loss += f_loss(output, targets)
         loss.backward()                              # backward pass
 
         # run optimizer
-        optimizer.step() 
+        optimizer.step()
     print("__Learning Rate (", learning_rate,") is done")
     return model
